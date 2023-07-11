@@ -2,13 +2,13 @@ package model;
 
 public class Product {
 
-    private String id;
+    private Integer id;
     private String brand;
     private String model;
-    private String price;
-    private String quantity;
+    private Double price;
+    private Integer quantity;
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -20,12 +20,32 @@ public class Product {
         this.model = model;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getBrand() {
+        return this.brand;
+    }
+
+    public String getModel() {
+        return this.model;
+    }
+
+    public Double getPrice() {
+        return this.price;
+    }
+
+    public Integer getQuantity() {
+        return this.quantity;
     }
 
 }

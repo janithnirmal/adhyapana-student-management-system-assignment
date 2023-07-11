@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 import model.Product;
 
 /**
@@ -21,7 +22,7 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
-    private HashMap<String, Object> productMap = new HashMap<>();
+    private static HashMap<String, Product> productMap = new HashMap<>();
 
     public Home() {
         initComponents();
@@ -39,17 +40,15 @@ public class Home extends javax.swing.JFrame {
                 vector.add(resultSet.getString("id"));
 
                 Product product = new Product();
-                product.setId(resultSet.getString("id"));
+                product.setId(resultSet.getInt("id"));
                 product.setBrand(resultSet.getString("brand.name"));
                 product.setModel(resultSet.getString("model"));
-                product.setPrice(resultSet.getString("price"));
-                product.setQuantity(resultSet.getString("qty"));
-
+                product.setPrice(resultSet.getDouble("price"));
+                product.setQuantity(resultSet.getInt("quantity"));
                 productMap.put(resultSet.getString("id"), product);
             }
 
-            DefaultComboBoxModel model = new DefaultComboBoxModel<>(vector);
-            jComboBox1.setModel(model);
+            jComboBox1.setModel(new DefaultComboBoxModel<>(vector));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,19 +104,32 @@ public class Home extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("INVOICE");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Mobile");
 
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Name");
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setText("Email");
 
-        jLabel13.setText("...");
+        jLabel13.setText(" ");
 
-        jLabel14.setText("...");
+        jLabel14.setText(" ");
 
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel15.setText("City");
 
-        jLabel16.setText("...");
+        jLabel16.setText(" ");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -150,27 +162,28 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(46, 46, 46)
                 .addComponent(jLabel3)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel14)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel15)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel16)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(168, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.LINE_START);
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel5.setText("Product");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -180,23 +193,32 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Model");
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel6.setText("Brand");
 
-        jLabel7.setText("...");
+        jLabel7.setText("  ");
 
-        jLabel8.setText("Product");
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel8.setText("Price");
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Quantity");
 
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel10.setText("Model");
 
-        jLabel11.setText("...");
+        jLabel11.setText(" ");
 
-        jLabel12.setText("...");
+        jLabel12.setText(" ");
 
         jButton1.setText("Print");
 
         jButton2.setText("Add");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -236,28 +258,27 @@ public class Home extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10)
-                        .addComponent(jLabel11))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jButton2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButton1))
-                        .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel5)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel8)
-                                .addComponent(jLabel12))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7))
+                                .addComponent(jLabel6)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel10))
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel9)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel11))
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -265,10 +286,7 @@ public class Home extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "id", "Brand", "Model", "Price", "Quantity"
@@ -282,8 +300,14 @@ public class Home extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel17.setText("Gross Amount");
 
         jLabel18.setText("...");
@@ -335,11 +359,141 @@ public class Home extends javax.swing.JFrame {
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
-
         String pid = String.valueOf(jComboBox1.getSelectedItem());
-        Product product = productMap.get(pid);
+
+        jLabel7.setText(" ");
+        jLabel11.setText(" ");
+        jTextField4.setText(" ");
+        jLabel12.setText(" ");
+
+        if (!pid.equals("select")) {
+            Product product = productMap.get(pid);
+
+            jLabel7.setText(product.getBrand());
+            jLabel11.setText(product.getModel());
+            jLabel12.setText(String.valueOf(product.getPrice()));
+        }
 
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        // TODO add your handling code here:
+
+        String mobile = jTextField1.getText();
+
+        jLabel14.setText(" ");
+        jLabel13.setText(" ");
+        jLabel16.setText(" ");
+
+        if (mobile.length() == 10) {
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `customer`"
+                        + " INNER JOIN `city` ON `customer`.`city_id`=`city`.`id`"
+                        + "WHERE `mobile`='" + mobile + "' ");
+
+                if (resultSet.next()) {
+                    String name = resultSet.getString("customer.name");
+                    String email = resultSet.getString("email");
+                    String city = resultSet.getString("city.name");
+
+                    jLabel14.setText(name);
+                    jLabel13.setText(email);
+                    jLabel16.setText(city);
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+
+        if (jComboBox1.getSelectedItem() == "select") {
+            System.out.println("Invali item");
+        } else if (jTextField4.getText().isBlank()) {
+            System.out.println("No qty");
+        } else {
+
+            String pid = String.valueOf(jComboBox1.getSelectedItem());
+            String quantity = jTextField4.getText();
+            Product product = productMap.get(pid);
+
+            boolean found = false;
+
+            for (int i = 0; i < jTable1.getRowCount(); i++) {
+
+                String currentPid = String.valueOf(jTable1.getValueAt(i, 0));
+
+                if (currentPid.equals(pid)) {
+                    String currentQuantity = String.valueOf(jTable1.getValueAt(i, 4));
+
+                    int newQty = Integer.parseInt(currentQuantity) + Integer.parseInt(quantity);
+//                    jTable1.setValueAt(String.valueOf(newQty), i, 4);
+                    System.out.println(currentQuantity);
+                    System.out.println(quantity);
+//                    System.out.println(newQty);
+
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                Vector<String> vector = new Vector<>();
+                vector.add(pid);
+                vector.add(product.getBrand());
+                vector.add(product.getModel());
+                vector.add(String.valueOf(product.getPrice()));
+                vector.add(quantity);
+
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                model.addRow(vector);
+            }
+
+            calculateTotal();
+            reset();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+
+        if (evt.getClickCount() == 2) {
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.removeRow(jTable1.getSelectedRow());
+
+            calculateTotal();
+        }
+
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void calculateTotal() {
+        double total = 0;
+
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            String price = String.valueOf(jTable1.getValueAt(i, 3));
+            String qty = String.valueOf(jTable1.getValueAt(i, 4));
+            double rowTotal = Double.parseDouble(qty) * Double.parseDouble(price);
+            total += rowTotal;
+        }
+
+        jLabel18.setText(String.valueOf(total));
+    }
+
+    private void reset() {
+        jComboBox1.setSelectedIndex(0);
+        jLabel7.setText(" ");
+        jLabel11.setText(" ");
+        jTextField4.setText(" ");
+        jLabel12.setText(" ");
+    }
 
     /**
      * @param args the command line arguments
