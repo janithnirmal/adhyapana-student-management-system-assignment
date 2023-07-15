@@ -948,7 +948,7 @@ public class Home extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(348, Short.MAX_VALUE)
+                .addContainerGap(352, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(294, 294, 294))
         );
@@ -2281,25 +2281,29 @@ public class Home extends javax.swing.JFrame {
     private void subjectManageTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subjectManageTableMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
+            String selectedSubno = String.valueOf(subjectManageTable.getValueAt(subjectManageTable.getSelectedRow(), 0));
 
-            String subnNo = String.valueOf(subjectMapAssigned.get(subjectManageTable.getValueAt(subjectManageTable.getSelectedRow(), 0)));
-            loadSubjectAssignee(Integer.valueOf(subnNo));
-
-            subjectManageSelectedSubjectTeacehrListCombobox.setModel(new DefaultComboBoxModel<String>(subjectMapAssigned.get(subnNo)));
-            System.out.println("added");
+            loadSubjectAssignee(selectedSubno);
+            Vector vector = subjectMapAssigned.get(selectedSubno);
+            subjectManageSelectedSubjectTeacehrListCombobox.setModel(new DefaultComboBoxModel<String>(vector));
+            System.out.println("success");
         }
     }//GEN-LAST:event_subjectManageTableMouseClicked
 
-    private void loadSubjectAssignee(int search) {
+    private void loadSubjectAssignee(String search) {
         subjectMapAssigned.clear();
         try {
-            ResultSet resultSet = MySQL.execute("SELECT * FORM `teacher_has_subject` WHERE `Subject_Subno`='" + search + "' ");
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `teacher_has_subject`"
+                    + " INNER JOIN `teacher` ON `teacher_has_subject`.`teacher_Tno` = `teacher`.`Tno`"
+                    + " WHERE `Subject_Subno`='" + search + "' ");
+
             Vector vector = new Vector();
             while (resultSet.next()) {
-                String Tno = resultSet.getString("teacher_Tno");
+                String Tno = resultSet.getString("teacher.name");
                 vector.add(Tno);
             }
-            subjectMapAssigned.put(String.valueOf(search), vector);
+            subjectMapAssigned.put(search, vector);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
