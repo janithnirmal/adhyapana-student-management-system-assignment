@@ -5,7 +5,6 @@ public class Subject {
     private String subno;
     private String name;
     private String description;
-    private Double price;
 
     public void setSubno(String subno) {
         this.subno = subno;
@@ -19,10 +18,6 @@ public class Subject {
         this.description = description;
     }
 
-    public void setPriec(Double price) {
-        this.price = price;
-    }
-
     public String getSubno() {
         return this.subno;
     }
@@ -33,10 +28,6 @@ public class Subject {
 
     public String getDescription() {
         return this.description;
-    }
-
-    public Double getPrice() {
-        return this.price;
     }
 
 }

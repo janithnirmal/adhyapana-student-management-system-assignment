@@ -41,6 +41,9 @@ public class Home extends javax.swing.JFrame {
 
     private static HashMap<String, Vector> subjectMapAssigned = new HashMap<>();
 
+    private static Vector<String> classStartTimeVector = new Vector<>();
+    private static Vector<String> classEndTimeVector = new Vector<>();
+
     public Home() {
         initComponents();
         loadUpdatedStudent("");
@@ -51,6 +54,42 @@ public class Home extends javax.swing.JFrame {
         initComponents();
         showAdminDetails(userData);
         loadUpdatedStudent("");
+    }
+
+    private void loadClassManageScheduleUI() {
+        Vector<String> teachers = new Vector<>();
+        teachers.add("select");
+        for (Map.Entry<String, Teacher> entry : teacherMapTno.entrySet()) {
+            teachers.add(entry.getValue().getTno());
+        }
+        classManageSchedueTeacherCombobox.setModel(new DefaultComboBoxModel<>(teachers));
+    }
+
+    private void loadTimeSlotsToUi() {
+        classManageSchedueStarttimeCombobox.setModel(new DefaultComboBoxModel<>(classStartTimeVector));
+        classManageSchedueEndtimeCombobox.setModel(new DefaultComboBoxModel<>(classEndTimeVector));
+
+        loadClassManageScheduleUI();
+    }
+
+    private void loadTimeSlots() {
+        try {
+            classStartTimeVector.clear();
+            classEndTimeVector.clear();
+
+            ResultSet resultSetStart = MySQL.execute("SELECT * FROM `timeslot_start`");
+            ResultSet resultSetEnd = MySQL.execute("SELECT * FROM `timeslot_end`");
+
+            while (resultSetStart.next()) {
+                classStartTimeVector.add(resultSetStart.getString("timeslot"));
+            }
+            while (resultSetEnd.next()) {
+                classEndTimeVector.add(resultSetEnd.getString("timeslot"));
+            }
+            loadTimeSlotsToUi();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadUpdatedSubjects(String search) {
@@ -75,7 +114,6 @@ public class Home extends javax.swing.JFrame {
                 subject.setSubno(resultSet.getString("Subno"));
                 subject.setName(resultSet.getString("name"));
                 subject.setDescription(resultSet.getString("Description"));
-                subject.setPriec(Double.valueOf(resultSet.getString("Price")));
 
                 subjectMapSubno.put(resultSet.getString("Subno"), subject);
                 subjectMapName.put(resultSet.getString("name"), subject);
@@ -101,7 +139,6 @@ public class Home extends javax.swing.JFrame {
                 subjectData.add(subject.getSubno());
                 subjectData.add(subject.getName());
                 subjectData.add(subject.getDescription());
-                subjectData.add(String.valueOf(subject.getPrice()));
                 model.addRow(subjectData);
             }
         } else {
@@ -111,7 +148,6 @@ public class Home extends javax.swing.JFrame {
                 vector.add(subject.getSubno());
                 vector.add(subject.getName());
                 vector.add(subject.getDescription());
-                vector.add(String.valueOf(subject.getPrice()));
                 model.addRow(vector);
             } else if (!search.matches("^-?\\d+$")) {
                 Subject subject = subjectMapName.get(search);
@@ -119,7 +155,6 @@ public class Home extends javax.swing.JFrame {
                 vector.add(subject.getSubno());
                 vector.add(subject.getName());
                 vector.add(subject.getDescription());
-                vector.add(String.valueOf(subject.getPrice()));
                 model.addRow(vector);
             }
         }
@@ -395,8 +430,6 @@ public class Home extends javax.swing.JFrame {
         subjectManageAddNameInput = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
         subjectManageAddDescriptionInput = new javax.swing.JTextField();
-        subjectManageAddPriceInput = new javax.swing.JTextField();
-        jLabel25 = new javax.swing.JLabel();
         subjectManageAddBtn = new javax.swing.JButton();
         subjectManageRemoveSection = new javax.swing.JPanel();
         subjectManageRemoveContentPanel = new javax.swing.JPanel();
@@ -416,10 +449,46 @@ public class Home extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
+        jPanel30 = new javax.swing.JPanel();
+        classManageSchedulePanelBtn = new javax.swing.JButton();
+        classManageScheduleListPanelBtn = new javax.swing.JButton();
+        classManageContentPanel = new javax.swing.JPanel();
+        classManageScheduleAddPanel = new javax.swing.JPanel();
+        jLabel28 = new javax.swing.JLabel();
+        classManageSchedueTeacherCombobox = new javax.swing.JComboBox<>();
+        jLabel29 = new javax.swing.JLabel();
+        classManageSchedueSubjectCombobox = new javax.swing.JComboBox<>();
+        jLabel30 = new javax.swing.JLabel();
+        classManageSchedueStarttimeCombobox = new javax.swing.JComboBox<>();
+        jLabel31 = new javax.swing.JLabel();
+        classManageSchedueEndtimeCombobox = new javax.swing.JComboBox<>();
+        jButton3 = new javax.swing.JButton();
+        jLabel32 = new javax.swing.JLabel();
+        classManageSchedueDateDatepicker = new com.toedter.calendar.JDateChooser();
+        classManageScheduleListPanel = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        classManageScheduleListTable = new javax.swing.JTable();
         paymentsPanel = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
+        jPanel31 = new javax.swing.JPanel();
+        paymentManageNewPaymentSectionOpenBtn = new javax.swing.JToggleButton();
+        PayementManageContainer = new javax.swing.JPanel();
+        paymentManageNewPaymentPanel = new javax.swing.JPanel();
+        paymentManageSnoInput = new javax.swing.JTextField();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        paymentManageTeacherCombobox = new javax.swing.JComboBox<>();
+        jLabel35 = new javax.swing.JLabel();
+        paymentManageSubjectCombobox = new javax.swing.JComboBox<>();
+        jLabel36 = new javax.swing.JLabel();
+        paymentManageMonthCombobox = new javax.swing.JComboBox<>();
+        paymentManagePriceLabel = new javax.swing.JTextField();
+        jLabel37 = new javax.swing.JLabel();
+        paymentManageCheckoutbtn = new javax.swing.JButton();
+        jLabel38 = new javax.swing.JLabel();
+        paymentManagePaidAmountInput = new javax.swing.JTextField();
         attendancePanel = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -948,7 +1017,7 @@ public class Home extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(352, Short.MAX_VALUE)
+                .addContainerGap(348, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(294, 294, 294))
         );
@@ -1338,7 +1407,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(subjectManageRemovePanelOpenBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(subjectManageAssignTeacherPanelOpenBtn)
-                .addContainerGap(344, Short.MAX_VALUE))
+                .addContainerGap(544, Short.MAX_VALUE))
         );
 
         jPanel10.add(jPanel6, java.awt.BorderLayout.LINE_START);
@@ -1363,11 +1432,11 @@ public class Home extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Subno", "subject", "Description", "Price"
+                "Subno", "subject", "Description"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1439,9 +1508,6 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jLabel25.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel25.setText("Subject Price");
-
         subjectManageAddBtn.setBackground(new java.awt.Color(0, 153, 0));
         subjectManageAddBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         subjectManageAddBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -1465,10 +1531,6 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(subjectManageAddNameInput, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(subjectManageAddDescriptionInput)
                     .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(subjectManageAddContentPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(subjectManageAddPriceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(subjectManageAddBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(339, Short.MAX_VALUE))
         );
@@ -1483,13 +1545,9 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(subjectManageAddDescriptionInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(subjectManageAddContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(subjectManageAddPriceInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(subjectManageAddBtn)
-                .addContainerGap(303, Short.MAX_VALUE))
+                .addContainerGap(327, Short.MAX_VALUE))
         );
 
         subjectManageAddSection.add(subjectManageAddContentPanel);
@@ -1513,11 +1571,11 @@ public class Home extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Subno", "Subject", "Description", "Price"
+                "Subno", "Subject", "Description"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1654,16 +1712,180 @@ public class Home extends javax.swing.JFrame {
 
         classesPanel.add(jPanel7, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 896, Short.MAX_VALUE)
+        jPanel8.setLayout(new java.awt.BorderLayout());
+
+        jPanel30.setPreferredSize(new java.awt.Dimension(200, 456));
+
+        classManageSchedulePanelBtn.setText("Schedule");
+        classManageSchedulePanelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                classManageSchedulePanelBtnActionPerformed(evt);
+            }
+        });
+
+        classManageScheduleListPanelBtn.setText("Scheduled List");
+        classManageScheduleListPanelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                classManageScheduleListPanelBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
+        jPanel30.setLayout(jPanel30Layout);
+        jPanel30Layout.setHorizontalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(classManageSchedulePanelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(classManageScheduleListPanelBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 656, Short.MAX_VALUE)
+        jPanel30Layout.setVerticalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(classManageSchedulePanelBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(classManageScheduleListPanelBtn)
+                .addContainerGap(600, Short.MAX_VALUE))
         );
+
+        jPanel8.add(jPanel30, java.awt.BorderLayout.LINE_START);
+
+        classManageContentPanel.setLayout(new java.awt.CardLayout());
+
+        jLabel28.setText("Teacher");
+
+        classManageSchedueTeacherCombobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                classManageSchedueTeacherComboboxItemStateChanged(evt);
+            }
+        });
+
+        jLabel29.setText("Subject");
+
+        jLabel30.setText("Start Time");
+
+        jLabel31.setText("End Time");
+
+        jButton3.setBackground(new java.awt.Color(0, 102, 255));
+        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("Schedule");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel32.setText("Date");
+
+        javax.swing.GroupLayout classManageScheduleAddPanelLayout = new javax.swing.GroupLayout(classManageScheduleAddPanel);
+        classManageScheduleAddPanel.setLayout(classManageScheduleAddPanelLayout);
+        classManageScheduleAddPanelLayout.setHorizontalGroup(
+            classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(classManageScheduleAddPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(classManageScheduleAddPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(classManageSchedueTeacherCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(classManageSchedueSubjectCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(classManageScheduleAddPanelLayout.createSequentialGroup()
+                        .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, classManageScheduleAddPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(classManageSchedueDateDatepicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, classManageScheduleAddPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(classManageSchedueStarttimeCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(classManageSchedueEndtimeCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(166, Short.MAX_VALUE))
+        );
+        classManageScheduleAddPanelLayout.setVerticalGroup(
+            classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(classManageScheduleAddPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(classManageSchedueSubjectCombobox)
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(classManageSchedueTeacherCombobox)
+                        .addComponent(jLabel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(classManageSchedueEndtimeCombobox)
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(classManageSchedueStarttimeCombobox)
+                        .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(classManageScheduleAddPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(classManageSchedueDateDatepicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addComponent(jButton3)
+                .addContainerGap(542, Short.MAX_VALUE))
+        );
+
+        classManageContentPanel.add(classManageScheduleAddPanel, "card2");
+
+        classManageScheduleListTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Schedule Id", "Teacher", "Subject", "Date", "Time Slot"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        classManageScheduleListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                classManageScheduleListTableMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(classManageScheduleListTable);
+
+        javax.swing.GroupLayout classManageScheduleListPanelLayout = new javax.swing.GroupLayout(classManageScheduleListPanel);
+        classManageScheduleListPanel.setLayout(classManageScheduleListPanelLayout);
+        classManageScheduleListPanelLayout.setHorizontalGroup(
+            classManageScheduleListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(classManageScheduleListPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        classManageScheduleListPanelLayout.setVerticalGroup(
+            classManageScheduleListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(classManageScheduleListPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(223, Short.MAX_VALUE))
+        );
+
+        classManageContentPanel.add(classManageScheduleListPanel, "card3");
+
+        jPanel8.add(classManageContentPanel, java.awt.BorderLayout.CENTER);
 
         classesPanel.add(jPanel8, java.awt.BorderLayout.CENTER);
 
@@ -1674,37 +1896,160 @@ public class Home extends javax.swing.JFrame {
         jPanel11.setBackground(new java.awt.Color(102, 51, 255));
         jPanel11.setPreferredSize(new java.awt.Dimension(898, 70));
 
-        jLabel9.setText("payments");
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel9.setText(" Payments Management");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                .addContainerGap(434, Short.MAX_VALUE)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(399, 399, 399))
+                .addContainerGap(357, Short.MAX_VALUE)
+                .addComponent(jLabel9)
+                .addGap(333, 333, 333))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel9)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         paymentsPanel.add(jPanel11, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 896, Short.MAX_VALUE)
+        jPanel12.setLayout(new java.awt.BorderLayout());
+
+        jPanel31.setPreferredSize(new java.awt.Dimension(200, 456));
+
+        paymentManageNewPaymentSectionOpenBtn.setText("New Payment");
+        paymentManageNewPaymentSectionOpenBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentManageNewPaymentSectionOpenBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
+        jPanel31.setLayout(jPanel31Layout);
+        jPanel31Layout.setHorizontalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel31Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(paymentManageNewPaymentSectionOpenBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 656, Short.MAX_VALUE)
+        jPanel31Layout.setVerticalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel31Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(paymentManageNewPaymentSectionOpenBtn)
+                .addContainerGap(628, Short.MAX_VALUE))
         );
+
+        jPanel12.add(jPanel31, java.awt.BorderLayout.LINE_START);
+
+        PayementManageContainer.setLayout(new java.awt.CardLayout());
+
+        jLabel33.setText("Sno");
+
+        jLabel34.setText("Teacher");
+
+        paymentManageTeacherCombobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                paymentManageTeacherComboboxItemStateChanged(evt);
+            }
+        });
+
+        jLabel35.setText("Subject");
+
+        paymentManageSubjectCombobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                paymentManageSubjectComboboxItemStateChanged(evt);
+            }
+        });
+
+        jLabel36.setText("Month");
+
+        paymentManagePriceLabel.setFocusable(false);
+
+        jLabel37.setText("Price");
+
+        paymentManageCheckoutbtn.setBackground(new java.awt.Color(0, 204, 0));
+        paymentManageCheckoutbtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        paymentManageCheckoutbtn.setForeground(new java.awt.Color(255, 255, 255));
+        paymentManageCheckoutbtn.setText("Checkout");
+        paymentManageCheckoutbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentManageCheckoutbtnActionPerformed(evt);
+            }
+        });
+
+        jLabel38.setText("Price");
+
+        javax.swing.GroupLayout paymentManageNewPaymentPanelLayout = new javax.swing.GroupLayout(paymentManageNewPaymentPanel);
+        paymentManageNewPaymentPanel.setLayout(paymentManageNewPaymentPanelLayout);
+        paymentManageNewPaymentPanelLayout.setHorizontalGroup(
+            paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paymentManageNewPaymentPanelLayout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(paymentManageCheckoutbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(paymentManageNewPaymentPanelLayout.createSequentialGroup()
+                        .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                            .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(12, 12, 12)
+                        .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(paymentManagePriceLabel)
+                            .addComponent(paymentManageMonthCombobox, 0, 286, Short.MAX_VALUE)
+                            .addComponent(paymentManageSnoInput))))
+                .addGap(9, 9, 9)
+                .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel35, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel38, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paymentManagePaidAmountInput)
+                    .addComponent(paymentManageSubjectCombobox, 0, 164, Short.MAX_VALUE)
+                    .addComponent(paymentManageTeacherCombobox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        paymentManageNewPaymentPanelLayout.setVerticalGroup(
+            paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paymentManageNewPaymentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(paymentManageNewPaymentPanelLayout.createSequentialGroup()
+                        .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(paymentManageTeacherCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(paymentManageSnoInput)
+                                .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(paymentManageSubjectCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(paymentManageMonthCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(paymentManagePriceLabel)
+                            .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(paymentManageNewPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(paymentManagePaidAmountInput)
+                        .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paymentManageCheckoutbtn)
+                .addContainerGap(544, Short.MAX_VALUE))
+        );
+
+        PayementManageContainer.add(paymentManageNewPaymentPanel, "card2");
+
+        jPanel12.add(PayementManageContainer, java.awt.BorderLayout.CENTER);
 
         paymentsPanel.add(jPanel12, java.awt.BorderLayout.CENTER);
 
@@ -1796,6 +2141,10 @@ public class Home extends javax.swing.JFrame {
         mainContainerPanel.add(this.classesPanel);
         mainContainerPanel.repaint();
         mainContainerPanel.revalidate();
+
+        loadUpdatedTeacher("");
+        loadClassManageScheduleUI();
+        loadTimeSlots();
     }//GEN-LAST:event_manageClassBtnActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1821,6 +2170,7 @@ public class Home extends javax.swing.JFrame {
         mainContainerPanel.revalidate();
 
         loadUpdatedSubjects("");
+        loadPaymentUi();
     }//GEN-LAST:event_managePaymentsBtnActionPerformed
 
     private void manageAttendanceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageAttendanceBtnActionPerformed
@@ -1906,10 +2256,11 @@ public class Home extends javax.swing.JFrame {
 
             String sno = String.valueOf(studentManagementTable.getValueAt(studentManagementTable.getSelectedRow(), 0));
             try {
+                MySQL.execute("DELETE FROM `invoice` WHERE `student_Sno` = '" + sno + "' ");
+                MySQL.execute("DELETE FROM `attendance` WHERE `student_Sno` = '" + sno + "' ");
                 MySQL.execute("DELETE FROM `student` WHERE `Sno` = '" + sno + "' ");
                 JOptionPane.showMessageDialog(this, "Student with id " + sno + " has successfully removed", "Remove Success", JOptionPane.INFORMATION_MESSAGE);
                 loadUpdatedStudent("");
-                loadStudents("");
                 resetStudentInputs();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2042,7 +2393,10 @@ public class Home extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No teacher is selected", "Invalid action", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
+                MySQL.execute("DELETE FROM `invoice` WHERE `teacher_has_Subject_teacher_has_Subject_id` = (SELECT `teacher_has_Subject_id` FROM `teacher_has_Subject` WHERE `teacher_Tno`='" + tno + "' ); ");
+                MySQL.execute("DELETE FROM `teacher_has_Subject` WHERE `teacher_Tno`='" + tno + "' ");
                 MySQL.execute("DELETE FROM `teacher` WHERE `Tno` = '" + tno + "' ");
+
                 JOptionPane.showMessageDialog(this, "Teacher successfully removed", "Successful", JOptionPane.INFORMATION_MESSAGE);
                 loadUpdatedTeacher("");
                 resetTeacherInputs();
@@ -2126,27 +2480,25 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
         String subjectName = subjectManageAddNameInput.getText();
         String subjectDescription = subjectManageAddDescriptionInput.getText();
-        String subjectPriceString = subjectManageAddPriceInput.getText();
 
         if (subjectName.isBlank()) {
             JOptionPane.showMessageDialog(this, "Empty Subject Name", "warnning", JOptionPane.ERROR_MESSAGE);
         } else if (subjectDescription.isBlank()) {
             JOptionPane.showMessageDialog(this, "Empty Subject Description", "warnning", JOptionPane.ERROR_MESSAGE);
-        } else if (subjectPriceString.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Add a Subject Price", "warnning", JOptionPane.ERROR_MESSAGE);
-        } else if (!subjectPriceString.matches("^\\d{1,5}(?:\\.\\d{1,2})?$")) {
-            JOptionPane.showMessageDialog(this, "Invalid Price", "warnning", JOptionPane.ERROR_MESSAGE);
-        } else {
-            Double price = Double.valueOf(subjectPriceString);
+        } //        else if (subjectPriceString.isBlank()) {
+        //            JOptionPane.showMessageDialog(this, "Add a Subject Price", "warnning", JOptionPane.ERROR_MESSAGE);
+        //        } else if (!subjectPriceString.matches("^\\d{1,5}(?:\\.\\d{1,2})?$")) {
+        //            JOptionPane.showMessageDialog(this, "Invalid Price", "warnning", JOptionPane.ERROR_MESSAGE);
+        //        }
+        else {
 
             try {
-                MySQL.execute("INSERT INTO `subject` (`name`, `Description`, `Price`) "
-                        + " VALUES ('" + subjectName + "', '" + subjectDescription + "', '" + price + "' ) ");
+                MySQL.execute("INSERT INTO `subject` (`name`, `Description`) "
+                        + " VALUES ('" + subjectName + "', '" + subjectDescription + "' ) ");
                 JOptionPane.showMessageDialog(this, "Subject added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 subjectManageAddNameInput.setText("");
                 subjectManageAddDescriptionInput.setText("");
-                subjectManageAddPriceInput.setText("");
 
                 loadUpdatedSubjects("");
             } catch (Exception e) {
@@ -2184,6 +2536,8 @@ public class Home extends javax.swing.JFrame {
 
             if (option == 0) {
                 try {
+                    MySQL.execute("DELETE FROM `invoice` WHERE `teach_has_Subject_teacher_has_Subject_id` = (SELECT `teach_has_Subject_teacher_has_Subject_id` FROM `teacher_has_Subject` WHERE `Subject_Subno`='" + subno + "' ) ");
+                    MySQL.execute("DELETE FROM `teacher_has_Subject` WHERE `Subject_Subno`='" + subno + "' ");
                     MySQL.execute("DELETE FROM `subject` WHERE `Subno` ='" + subno + "' ");
                     JOptionPane.showMessageDialog(this, "Subject Removed Successfully", "Removed", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e) {
@@ -2290,6 +2644,274 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_subjectManageTableMouseClicked
 
+    private void classManageSchedueTeacherComboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_classManageSchedueTeacherComboboxItemStateChanged
+        // TODO add your handling code here:
+        Vector<String> subject = new Vector<>();
+        subject.add("select");
+
+        String selectedTeacher = String.valueOf(classManageSchedueTeacherCombobox.getSelectedItem());
+
+        try {
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `teacher_has_subject` INNER JOIN `Subject` ON `teacher_has_subject`.`Subject_Subno`=`Subject`.`Subno` WHERE `teacher_Tno`='" + selectedTeacher + "' ");
+            while (resultSet.next()) {
+                subject.add(resultSet.getString("Subject.name"));
+            }
+            classManageSchedueSubjectCombobox.setModel(new DefaultComboBoxModel<>(subject));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }//GEN-LAST:event_classManageSchedueTeacherComboboxItemStateChanged
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        String tno = String.valueOf(classManageSchedueTeacherCombobox.getSelectedItem());
+        String subjectName = String.valueOf(classManageSchedueSubjectCombobox.getSelectedItem());
+        String startTime = String.valueOf(classManageSchedueStarttimeCombobox.getSelectedItem());
+        String endTime = String.valueOf(classManageSchedueEndtimeCombobox.getSelectedItem());
+        java.util.Date date = classManageSchedueDateDatepicker.getDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = dateFormat.format(date);
+
+        if (tno.equals("select")) {
+            JOptionPane.showMessageDialog(this, "Please Select a teacher", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (subjectName.equals("select")) {
+            JOptionPane.showMessageDialog(this, "Please Select a subject", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (dateString.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please Select a date", "error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `teacher_has_Subject` INNER JOIN `Subject` ON `teacher_has_Subject`.`Subject_Subno`=`Subject`.`Subno` WHERE `teacher_Tno`='" + tno + "' AND `name`='" + subjectName + "' ");
+
+                if (resultSet.next()) {
+                    MySQL.execute("INSERT INTO `classes` (`teacher_has_Subject_teacher_has_Subject_id`, `timeslot_start_id`, `timeslot_end_id`, `date`) "
+                            + " VALUES ('" + resultSet.getString("teacher_has_Subject_id") + "', "
+                            + " (SELECT `id` FROM `timeslot_start` WHERE `timeslot`='" + startTime + "' ), "
+                            + " (SELECT `id` FROM `timeslot_end` WHERE `timeslot`='" + endTime + "'), "
+                            + " '" + dateString + "' )");
+                    JOptionPane.showMessageDialog(this, "Successfully scheduled", "success", JOptionPane.INFORMATION_MESSAGE);
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void classManageSchedulePanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_classManageSchedulePanelBtnActionPerformed
+        // TODO add your handling code here:
+        classManageContentPanel.removeAll();
+        classManageContentPanel.add(this.classManageScheduleAddPanel);
+        classManageContentPanel.repaint();
+        classManageContentPanel.revalidate();
+
+        loadUpdatedTeacher("");
+        loadClassManageScheduleUI();
+        loadTimeSlots();
+    }//GEN-LAST:event_classManageSchedulePanelBtnActionPerformed
+
+    private void classManageScheduleListPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_classManageScheduleListPanelBtnActionPerformed
+        // TODO add your handling code here:
+
+        classManageContentPanel.removeAll();
+        classManageContentPanel.add(this.classManageScheduleListPanel);
+        classManageContentPanel.repaint();
+        classManageContentPanel.revalidate();
+
+        loadScheduledClasList();
+    }//GEN-LAST:event_classManageScheduleListPanelBtnActionPerformed
+
+    private void classManageScheduleListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_classManageScheduleListTableMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            String selectedItem = String.valueOf(classManageScheduleListTable.getValueAt(classManageScheduleListTable.getSelectedRow(), 0));
+
+            try {
+                MySQL.execute("DELETE FROM `classes` WHERE `ClassNo`='" + selectedItem + "' ");
+                JOptionPane.showMessageDialog(this, "successfully remove the scheduled item", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                loadScheduledClasList();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_classManageScheduleListTableMouseClicked
+
+    private void paymentManageCheckoutbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentManageCheckoutbtnActionPerformed
+        // TODO add your handling code here:
+        String Sno = paymentManageSnoInput.getText();
+        String Teacher = String.valueOf(paymentManageTeacherCombobox.getSelectedItem());
+        String Subject = String.valueOf(paymentManageSubjectCombobox.getSelectedItem());
+        String month = String.valueOf(paymentManageMonthCombobox.getSelectedItem());
+        String paidAmount = paymentManagePaidAmountInput.getText();
+
+        if (Sno.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please enter a student No ", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (Teacher.equals("select")) {
+            JOptionPane.showMessageDialog(this, "Select a Teacher", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (Subject.equals("select")) {
+            JOptionPane.showMessageDialog(this, "Select  a subject", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (month.equals("select")) {
+            JOptionPane.showMessageDialog(this, "Select a month", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (paidAmount.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Enter paid amount", "error", JOptionPane.ERROR_MESSAGE);
+        } else if (!paidAmount.matches("^-?\\d+$")) {
+            JOptionPane.showMessageDialog(this, "Select a a proper amount", "error", JOptionPane.ERROR_MESSAGE);
+        } else {
+
+            String teacherSubjectId = "";
+            String monthId = "";
+
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `teacher_has_subject` "
+                        + " INNER JOIN `teacher` ON `teacher_has_subject`.`teacher_Tno` = `teacher`.`Tno` "
+                        + " INNER JOIN `subject` ON `teacher_has_subject`.`Subject_Subno` =  `subject`.`Subno` "
+                        + " WHERE `teacher`.`Name`='" + Teacher + "' AND `subject`.`name` = '" + Subject + "' ");
+
+                if (resultSet.next()) {
+                    teacherSubjectId = resultSet.getString("teacher_has_Subject_id");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `month` WHERE `month`='" + month + "' ");
+
+                if (resultSet.next()) {
+                    monthId = resultSet.getString("month_id");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                MySQL.execute("INSERT INTO  `invoice` (`student_Sno`, `teacher_has_Subject_teacher_has_Subject_id`, `paid`, `month_month_id`) "
+                        + " VALUES ('" + Sno + "', '" + teacherSubjectId + "', '" + paidAmount + "', '" + monthId + "')  ");
+                JOptionPane.showMessageDialog(this, "successfully Payment added", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }//GEN-LAST:event_paymentManageCheckoutbtnActionPerformed
+
+    private void paymentManageNewPaymentSectionOpenBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentManageNewPaymentSectionOpenBtnActionPerformed
+        // TODO add your handling code here:
+        loadPaymentUi();
+    }//GEN-LAST:event_paymentManageNewPaymentSectionOpenBtnActionPerformed
+
+    private void paymentManageTeacherComboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_paymentManageTeacherComboboxItemStateChanged
+        // TODO add your handling code here:
+        try {
+
+            Vector<String> vector2 = new Vector<>();
+            vector2.add("select");
+
+            ResultSet resultSet2 = MySQL.execute("SELECT * FROM `teacher_has_subject` "
+                    + " INNER JOIN `subject` ON `teacher_has_subject`.`Subject_Subno` = `subject`.`Subno`"
+                    + " INNER JOIN `teacher` ON `teacher_has_subject`.`teacher_Tno` = `teacher`.`Tno`"
+                    + " WHERE `teacher`.`Name` = '" + paymentManageTeacherCombobox.getSelectedItem() + "' ");
+            while (resultSet2.next()) {
+                vector2.add(resultSet2.getString("subject.name"));
+            }
+
+            paymentManageSubjectCombobox.setModel(new DefaultComboBoxModel<>(vector2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_paymentManageTeacherComboboxItemStateChanged
+
+    private void paymentManageSubjectComboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_paymentManageSubjectComboboxItemStateChanged
+        // TODO add your handling code here:
+        try {
+
+            String teacher = String.valueOf(paymentManageTeacherCombobox.getSelectedItem());
+            String subject = String.valueOf(paymentManageSubjectCombobox.getSelectedItem());
+
+            Vector<String> vector2 = new Vector<>();
+            vector2.add("select");
+
+            ResultSet resultSet2 = MySQL.execute("SELECT * FROM  `teacher_has_subject`"
+                    + " INNER JOIN `subject` ON `teacher_has_subject`.`Subject_Subno` = `subject`.`Subno`"
+                    + " INNER JOIN `teacher` ON `teacher_has_subject`.`teacher_Tno` = `teacher`.`Tno`"
+                    + " WHERE `teacher`.`Name` = '" + teacher + "' AND `subject`.`name` ='" + subject + "' ");
+
+            if (resultSet2.next()) {
+                paymentManagePriceLabel.setText(resultSet2.getString("price"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_paymentManageSubjectComboboxItemStateChanged
+
+    private void loadPaymentUi() {
+        try {
+
+            Vector<String> vector = new Vector<>();
+            vector.add("select");
+
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `teacher`");
+            while (resultSet.next()) {
+                vector.add(resultSet.getString("Name"));
+            }
+
+            paymentManageTeacherCombobox.setModel(new DefaultComboBoxModel<>(vector));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            Vector<String> vector2 = new Vector<>();
+            vector2.add("select");
+
+            ResultSet resultSet2 = MySQL.execute("SELECT * FROM `month`");
+            while (resultSet2.next()) {
+                vector2.add(resultSet2.getString("month"));
+            }
+
+            paymentManageMonthCombobox.setModel(new DefaultComboBoxModel<>(vector2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadScheduledClasList() {
+        try {
+
+            DefaultTableModel model = (DefaultTableModel) classManageScheduleListTable.getModel();
+            model.setRowCount(0);
+
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `classes` "
+                    + " INNER JOIN `teacher_has_subject` ON `classes`.`teacher_has_Subject_teacher_has_Subject_id`=`teacher_has_subject`.`teacher_has_Subject_id` "
+                    + " INNER JOIN `teacher` ON `teacher_has_subject`.`teacher_Tno` = `teacher`.`Tno` "
+                    + " INNER JOIN `Subject` ON `teacher_has_subject`.`Subject_Subno` = `subject`.`Subno` "
+                    + " INNER JOIN `timeslot_start` ON `classes`.`timeslot_start_id` = `timeslot_start`.`id` "
+                    + " INNER JOIN `timeslot_end` ON `classes`.`timeslot_end_id` = `timeslot_end`.`id` ");
+
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("ClassNo"));
+                vector.add(resultSet.getString("teacher.Name"));
+                vector.add(resultSet.getString("subject.name"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("timeslot_start.timeslot") + " - " + resultSet.getString("timeslot_end.timeslot"));
+                model.addRow(vector);
+            }
+
+            classManageScheduleListTable.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadSubjectAssignee(String search) {
         subjectMapAssigned.clear();
         try {
@@ -2321,12 +2943,25 @@ public class Home extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PayementManageContainer;
     private javax.swing.JLabel adminEmailLabel1;
     private javax.swing.JLabel adminFirstNameLabel1;
     private javax.swing.JLabel adminLastNameLabel1;
     private javax.swing.JPanel attendancePanel;
+    private javax.swing.JPanel classManageContentPanel;
+    private com.toedter.calendar.JDateChooser classManageSchedueDateDatepicker;
+    private javax.swing.JComboBox<String> classManageSchedueEndtimeCombobox;
+    private javax.swing.JComboBox<String> classManageSchedueStarttimeCombobox;
+    private javax.swing.JComboBox<String> classManageSchedueSubjectCombobox;
+    private javax.swing.JComboBox<String> classManageSchedueTeacherCombobox;
+    private javax.swing.JPanel classManageScheduleAddPanel;
+    private javax.swing.JPanel classManageScheduleListPanel;
+    private javax.swing.JButton classManageScheduleListPanelBtn;
+    private javax.swing.JTable classManageScheduleListTable;
+    private javax.swing.JButton classManageSchedulePanelBtn;
     private javax.swing.JPanel classesPanel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2344,10 +2979,20 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2377,6 +3022,8 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -2387,6 +3034,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -2398,6 +3046,15 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton manageSubjectsBtn;
     private javax.swing.JButton manageTeachersBtn;
     private javax.swing.JPanel navigationPanel;
+    private javax.swing.JButton paymentManageCheckoutbtn;
+    private javax.swing.JComboBox<String> paymentManageMonthCombobox;
+    private javax.swing.JPanel paymentManageNewPaymentPanel;
+    private javax.swing.JToggleButton paymentManageNewPaymentSectionOpenBtn;
+    private javax.swing.JTextField paymentManagePaidAmountInput;
+    private javax.swing.JTextField paymentManagePriceLabel;
+    private javax.swing.JTextField paymentManageSnoInput;
+    private javax.swing.JComboBox<String> paymentManageSubjectCombobox;
+    private javax.swing.JComboBox<String> paymentManageTeacherCombobox;
     private javax.swing.JPanel paymentsPanel;
     private javax.swing.JButton removeSubjectRemoveBtn;
     private javax.swing.JPanel sidebarPanel;
@@ -2420,7 +3077,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JTextField subjectManageAddDescriptionInput;
     private javax.swing.JTextField subjectManageAddNameInput;
     private javax.swing.JButton subjectManageAddPanelOpenBtn;
-    private javax.swing.JTextField subjectManageAddPriceInput;
     private javax.swing.JPanel subjectManageAddSection;
     private javax.swing.JToggleButton subjectManageAssignTeacherAssignBtn;
     private javax.swing.JButton subjectManageAssignTeacherPanelOpenBtn;
