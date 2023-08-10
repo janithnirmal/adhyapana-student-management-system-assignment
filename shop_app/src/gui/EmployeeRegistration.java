@@ -4,9 +4,15 @@
  */
 package gui;
 
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 
 /**
@@ -15,14 +21,36 @@ import model.MySQL;
  */
 public class EmployeeRegistration extends javax.swing.JFrame {
 
+    private static HashMap<String, String> employeeTypeMap = new HashMap<>();
+    private static HashMap<String, String> genderMap = new HashMap<>();
+
     /**
      * Creates new form EmployeeRegistration
      */
-    
-    private static HashMap<>
-    
+    //    private static HashMap<>
     public EmployeeRegistration() {
         initComponents();
+        loadGender();
+        loadTypes();
+        loadEmployees();
+    }
+
+    private void loadTypes() {
+        try {
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `employee_type`");
+            Vector<String> vector = new Vector<>();
+            vector.add("Select");
+
+            while (resultSet.next()) {
+                vector.add(resultSet.getString("name"));
+                employeeTypeMap.put(resultSet.getString("name"), resultSet.getString("id"));
+            }
+            DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
+            jComboBox2.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadGender() {
@@ -33,12 +61,57 @@ public class EmployeeRegistration extends javax.swing.JFrame {
 
             while (resultSet.next()) {
                 vector.add(resultSet.getString("name"));
-                
+                genderMap.put(resultSet.getString("name"), resultSet.getString("id"));
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
+            jComboBox1.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadEmployees() {
+        try {
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `employee` "
+                    + " INNER JOIN `employee_type` ON `employee`.`employee_type_id`=`employee_type`.`id` "
+                    + " INNER JOIN `gender` ON `employee`.`gender_id`=`gender`.`id` ");
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+
+            while (resultSet.next()) {
+                Vector<String> vector = new Vector<>();
+                vector.add(resultSet.getString("email"));
+                vector.add(resultSet.getString("first_name"));
+                vector.add(resultSet.getString("last_name"));
+                vector.add(resultSet.getString("nic"));
+                vector.add(resultSet.getString("mobile"));
+                vector.add(resultSet.getString("gender.name"));
+                vector.add(resultSet.getString("password"));
+                vector.add(resultSet.getString("employee_type.name"));
+                vector.add(resultSet.getString("date_registered"));
+                model.addRow(vector);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void reset() {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jComboBox1.setSelectedIndex(0);
+        jPasswordField1.setText("");
+        jTextField1.setText("");
+        jComboBox2.setSelectedIndex(0);
+
+        jTextField1.grabFocus();
     }
 
     /**
@@ -70,6 +143,7 @@ public class EmployeeRegistration extends javax.swing.JFrame {
         jComboBox2 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -97,6 +171,15 @@ public class EmployeeRegistration extends javax.swing.JFrame {
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setText("Create Account");
+        jButton1.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jButton1AncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -110,6 +193,13 @@ public class EmployeeRegistration extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("R");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -120,23 +210,25 @@ public class EmployeeRegistration extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
+                        .addComponent(jTextField2))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
+                        .addComponent(jTextField3))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
+                        .addComponent(jTextField4))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
+                        .addComponent(jTextField5))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -158,7 +250,8 @@ public class EmployeeRegistration extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,24 +289,35 @@ public class EmployeeRegistration extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Email", "First Name", "Last Name", "NIC", "Mobile", "Gender", "Password", "Type"
+                "Email", "First Name", "Last Name", "NIC", "Mobile", "Gender", "Password", "Type", "registered_date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setMinWidth(250);
+            jTable1.getColumnModel().getColumn(0).setMaxWidth(250);
+            jTable1.getColumnModel().getColumn(5).setMaxWidth(50);
+            jTable1.getColumnModel().getColumn(7).setMaxWidth(50);
+        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -237,9 +341,9 @@ public class EmployeeRegistration extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,42 +368,189 @@ public class EmployeeRegistration extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+// TODO add your handling code here:
+        try {
+            String email = jTextField1.getText();
+            String firstName = jTextField2.getText();
+            String lastName = jTextField3.getText();
+            String nic = jTextField4.getText();
+            String mobile = jTextField5.getText();
+            String gender = String.valueOf(jComboBox1.getSelectedItem());
+            String password = String.valueOf(jPasswordField1.getPassword());
+            String type = String.valueOf(jComboBox2.getSelectedItem());
+
+            if (firstName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee first name", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (lastName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee last name", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (nic.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee nic", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (mobile.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee mobile", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!mobile.matches("^07[01245678]{1}[0-9]{7}$")) {
+                JOptionPane.showMessageDialog(this, "Invalid employee mobile no", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (gender.equals("Select")) {
+                JOptionPane.showMessageDialog(this, "Please select gender", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a password", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
+                JOptionPane.showMessageDialog(this, "Passwords are invalid", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (type.equals("Select")) {
+                JOptionPane.showMessageDialog(this, "Please select a type", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else {
+
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `employee` WHERE `email`='" + email + "', `nic`='" + nic + "' OR `mobile`='" + mobile + "' ");
+
+                if (resultSet.next()) {
+                    JOptionPane.showMessageDialog(this, "User exist with same Email, Mobile or NIC", "Warnning", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    // Insert
+                    Date date = new Date();
+                    SimpleDateFormat registeredDate = new SimpleDateFormat("yyyy-MM-dd");
+
+                    MySQL.execute("INSERT INTO `employee` (`email`, `first_name`, `last_name`, `nic`, `mobile`, `employee_type_id`, `date_registered`, `password`, `gender_id`) "
+                            + "VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + nic + "','" + mobile + "','" + employeeTypeMap.get(type) + "','" + registeredDate.format(date) + "','" + password + "','" + genderMap.get(gender) + "')");
+                    JOptionPane.showConfirmDialog(this, "Employee addedd");
+                    loadEmployees();
+                    reset();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        try {
+            String email = jTextField1.getText();
+            String firstName = jTextField2.getText();
+            String lastName = jTextField3.getText();
+            String nic = jTextField4.getText();
+            String mobile = jTextField5.getText();
+            String gender = String.valueOf(jComboBox1.getSelectedItem());
+            String password = String.valueOf(jPasswordField1.getPassword());
+            String type = String.valueOf(jComboBox2.getSelectedItem());
+
+            if (email.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee email", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!email.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                    + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
+                JOptionPane.showMessageDialog(this, "Invalid employee email", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (firstName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee first name", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (lastName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee last name", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (nic.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee nic", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (mobile.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter employee mobile", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!mobile.matches("^07[01245678]{1}[0-9]{7}$")) {
+                JOptionPane.showMessageDialog(this, "Invalid employee mobile no", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (gender.equals("Select")) {
+                JOptionPane.showMessageDialog(this, "Please select gender", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a password", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
+                JOptionPane.showMessageDialog(this, "Passwords are invalid", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (type.equals("Select")) {
+                JOptionPane.showMessageDialog(this, "Please select a type", "Warnning", JOptionPane.WARNING_MESSAGE);
+            } else {
+
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `employee` WHERE `nic`='" + nic + "' OR `mobile`='" + mobile + "' ");
+                boolean canUpdate = false;
+
+                if (resultSet.next()) {
+                    if (!resultSet.getString("email").equals(email)) {
+                        JOptionPane.showMessageDialog(this, "Mobile or NIC already used", "Warnning", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        System.out.println("Same Data");
+                        canUpdate = true;
+                    }
+                } else {
+                    canUpdate = true;
+                }
+
+                if (canUpdate) {
+                    MySQL.execute("UPDATE `employee` SET `first_name` = '" + firstName + "', `last_name`='" + lastName + "', `nic`='" + nic + "', "
+                            + " `mobile`='" + mobile + "', `gender_id`='" + genderMap.get(gender) + "', `password`='" + password + "', `employee_type_id`='" + employeeTypeMap.get(type) + "' WHERE `email` = '" + email + "'  ");
+
+                    loadEmployees();
+                    reset();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
+        if (evt.getClickCount() == 1) {
+
+            // TODO add your handling code here:
+            int row = jTable1.getSelectedRow();
+
+            String email = String.valueOf(jTable1.getValueAt(row, 0));
+            jTextField1.setText(email);
+
+            String firstName = String.valueOf(jTable1.getValueAt(row, 1));
+            jTextField2.setText(firstName);
+
+            String lastName = String.valueOf(jTable1.getValueAt(row, 2));
+            jTextField3.setText(lastName);
+
+            String nic = String.valueOf(jTable1.getValueAt(row, 3));
+            jTextField4.setText(nic);
+
+            String mobile = String.valueOf(jTable1.getValueAt(row, 4));
+            jTextField5.setText(mobile);
+
+            String gender = String.valueOf(jTable1.getValueAt(row, 5));
+            jComboBox1.setSelectedItem(gender);
+
+            String password = String.valueOf(jTable1.getValueAt(row, 6));
+            jPasswordField1.setText(password);
+
+            String type = String.valueOf(jTable1.getValueAt(row, 7));
+            jComboBox2.setSelectedItem(type);
+
+            jTextField1.setEditable(false);
+        } else if (evt.getClickCount() == 2) {
+            int row = jTable1.getSelectedRow();
+            String email = String.valueOf(jTable1.getValueAt(row, 0));
+
+            AddressView addressView = new AddressView(this, true, email);
+            addressView.setVisible(true);
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        jTextField1.setEditable(true);
+        reset();
+        jTable1.clearSelection();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jButton1AncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1AncestorAdded
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EmployeeRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EmployeeRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EmployeeRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EmployeeRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        FlatDarkPurpleIJTheme.setup();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -312,6 +563,7 @@ public class EmployeeRegistration extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel10;
