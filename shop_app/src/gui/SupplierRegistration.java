@@ -5,12 +5,19 @@
 package gui;
 
 import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import model.MySQL;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author kasun
  */
 public class SupplierRegistration extends javax.swing.JFrame {
+
+    String companyId;
 
     /**
      * Creates new form SupplierRegistration
@@ -20,6 +27,32 @@ public class SupplierRegistration extends javax.swing.JFrame {
         jTextField1.setEditable(false);
     }
 
+    public void setCompanyId(String id) {
+        this.companyId = id;
+    }
+
+    public void setCompanyName(String name) {
+        jTextField1.setText(name);
+    }
+
+    public void grabMobileField() {
+        jTextField2.grabFocus();
+    }
+
+    private void loadSuppliers() {
+        try {
+            ResultSet resultSet = MySQL.execute("SELECT * FROM `supplier` INNER JOIN `company` "
+                    + "ON `supplier`.`company_id` = `company`.`id` ORDER BY `first_name` ASC  ");
+            
+            
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+            
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -89,6 +122,11 @@ public class SupplierRegistration extends javax.swing.JFrame {
         jLabel5.setText("Email");
 
         jButton2.setText("Create Account");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Update Account");
 
@@ -262,6 +300,47 @@ public class SupplierRegistration extends javax.swing.JFrame {
         companyRegistration.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String mobile = jTextField2.getText();
+        String firstName = jTextField3.getText();
+        String lastName = jTextField4.getText();
+        String email = jTextField5.getText();
+
+        if (companyId == null) {
+            JOptionPane.showMessageDialog(this, "Please select a copany", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (mobile.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a mobile for Supplier", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (!mobile.matches("^07[01245678]{1}[0-9]{7}$")) {
+            JOptionPane.showMessageDialog(this, "Invalid Customer mobile no", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (firstName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter firstname for Supplier", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter lastname for Supplier", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter an email for Supplier", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (!email.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
+            JOptionPane.showMessageDialog(this, "Invalid Supplier Email", "Warnning", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `supplier` WHERE `mobile`='" + mobile + "' AND `email`='" + email + "' ");
+
+                if (resultSet.next()) {
+                    JOptionPane.showMessageDialog(this, "Invalid Supplier Email", "Warnning", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    MySQL.execute("INSERT INTO  `supplier` (`mobile`, `first_name`, `last_name`, `email`, `company_id`) "
+                            + "VALUES ('" + mobile + "', '" + firstName + "', '" + lastName + "', '" + email + "', '" + companyId + "') ");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -282,8 +361,6 @@ public class SupplierRegistration extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

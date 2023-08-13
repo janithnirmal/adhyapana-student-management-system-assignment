@@ -4,8 +4,10 @@
  */
 package gui;
 
+import java.awt.Frame;
 import java.sql.ResultSet;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 
@@ -15,6 +17,8 @@ import model.MySQL;
  */
 public class CompanyRegistration extends javax.swing.JDialog {
 
+    SupplierRegistration sr;
+
     /**
      * Creates new form CompanyRegistration
      */
@@ -22,6 +26,18 @@ public class CompanyRegistration extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         loadCompanies();
+
+        sr = (SupplierRegistration) parent;
+    }
+
+    private void reset() {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField1.grabFocus();
+
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(true);
+        jTable1.clearSelection();
     }
 
     /**
@@ -42,6 +58,7 @@ public class CompanyRegistration extends javax.swing.JDialog {
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -65,11 +82,33 @@ public class CompanyRegistration extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("Update");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Add");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("R");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -87,10 +126,13 @@ public class CompanyRegistration extends javax.swing.JDialog {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 4, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -102,7 +144,8 @@ public class CompanyRegistration extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField2)
                             .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(jButton2)
+                            .addComponent(jButton3))
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jTextField1)
@@ -126,6 +169,98 @@ public class CompanyRegistration extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+
+        String name = jTextField1.getText();
+        String hotline = jTextField2.getText();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a company name", "warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (hotline.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a company hotline number", "warnning", JOptionPane.WARNING_MESSAGE);
+        } else if (!hotline.matches("^0((11)|(2(1|[3-7]))|(3[1-8])|(4(1|5|7))|(5(1|2|4|5|7))|(6(3|[5-7]))|([8-9]1))[0-9]{7}$")) {
+            JOptionPane.showMessageDialog(this, "Invalid company hotline number", "warnning", JOptionPane.WARNING_MESSAGE);
+        } else {
+            try {
+                ResultSet resultSet = MySQL.execute("SELECT * FROM `company` WHERE `name`='" + name + "' OR `hotline`='" + hotline + "' ");
+                if (resultSet.next()) {
+                    JOptionPane.showMessageDialog(this, "Company name or hotline already used", "Warnning", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    MySQL.execute("INSERT INTO `company` (`name`, `hotline`) VALUES ('" + name + "', '" + hotline + "') ");
+                    loadCompanies();
+                    reset();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+
+        jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 1)));
+        jTextField2.setText(String.valueOf(jTable1.getValueAt(row, 2)));
+
+        jButton2.setEnabled(false);
+
+        if (evt.getClickCount() == 2) {
+            String name = String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 1));
+            //            System.out.println(name);
+            sr.setCompanyName(name);
+            this.dispose();
+            sr.grabMobileField();
+            sr.setCompanyId(String.valueOf(jTable1.getValueAt(row, 0)));
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Please Select a Company to update", "warnning", JOptionPane.WARNING_MESSAGE);
+        } else {
+            String name = jTextField1.getText();
+            String hotline = jTextField2.getText();
+
+            String id = String.valueOf(jTable1.getValueAt(row, 0));
+
+            String selectedName = String.valueOf(jTable1.getValueAt(row, 1));
+            String selectedHotline = String.valueOf(jTable1.getValueAt(row, 2));
+
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a company name", "warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (hotline.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a company hotline number", "warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (!hotline.matches("^0((11)|(2(1|[3-7]))|(3[1-8])|(4(1|5|7))|(5(1|2|4|5|7))|(6(3|[5-7]))|([8-9]1))[0-9]{7}$")) {
+                JOptionPane.showMessageDialog(this, "Invalid company hotline number", "warnning", JOptionPane.WARNING_MESSAGE);
+            } else if (selectedName.equals(name) && selectedHotline.equals(hotline)) {
+                JOptionPane.showMessageDialog(this, "Please change the hotline or name to updated", "warnning", JOptionPane.WARNING_MESSAGE);
+            } else {
+                try {
+                    ResultSet resultSet = MySQL.execute("SELECT * FROM `company` WHERE (`name`='" + name + "' OR `hotline`='" + hotline + "') AND `id`!='" + id + "' ");
+                    if (resultSet.next()) {
+                        JOptionPane.showMessageDialog(this, "Company name or hotline already used", "Warnning", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        MySQL.execute("UPDATE `company` SET `name`='" + name + "', `hotline`='" + hotline + "' WHERE `id`='" + id + "' ");
+                        loadCompanies();
+                        reset();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        reset();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -191,6 +326,7 @@ public class CompanyRegistration extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
